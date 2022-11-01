@@ -22,3 +22,13 @@ Route::resource('challenge',\App\Http\Controllers\ChallengeController::class);
 Route::resource('feed',\App\Http\Controllers\FeedController::class);
 Route::resource('upload',\App\Http\Controllers\UploadController::class);
 Route::resource('message',\App\Http\Controllers\MessageController::class);
+
+Route::get('check',function(Request $request){
+    $l = $request->input('l');
+    // dump(\App\Models\Shortlink::where('short',$l)->count());
+    // dd($l);
+    if(\App\Models\Shortlink::where('short',$l)->count() == 0){
+        return response()->json(['error_code'=>0,'data'=>null,'error_message'=>'']);
+    }
+    return response()->json(['error_code'=>1,'data'=>null,'error_message'=>'']);
+});

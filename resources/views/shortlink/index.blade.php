@@ -13,7 +13,19 @@
 <body>
 
 
-<div class="container">
+<div class="container position-relative">
+
+    <div class="toast" style="position: absolute; top: 0; right: 0; z-index: 99;">
+        <div class="toast-header">
+            {{--            <img src="..." class="rounded mr-2" alt="...">--}}
+            <strong class="mr-auto">Short link</strong>
+            {{--            <small>11 mins ago</small>--}}
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body" style="z-index: 99;"></div>
+    </div>
     <nav class="navbar navbar-expand-md navbar-light bg-light">
         <a class="navbar-brand" href="/">Short link</a>
         <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
@@ -75,6 +87,7 @@
         {{ $shorturl }}
     @endif
     @auth()
+
         <form method='post' id="form-shortlink">
             {{ csrf_field() }}
             <div class="form-row">
@@ -84,7 +97,7 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <input type="link" name='shorturl' class="form-control" id="inputEmail43"
+                    <input type="link" name='shorturl' class="form-control" id="shorturl"
                            placeholder="Custom URL">
                 </div>
             </div>
@@ -128,13 +141,33 @@
         @endforeach
         </tbody>
     </table>
+
 </div>
+<!-- Modal -->
+<div class="modal fade" id="alert-modal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Validate</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Incorrect url format
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
         integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
         crossorigin="anonymous"></script>
@@ -142,10 +175,44 @@
         integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
         crossorigin="anonymous"></script>
 <script>
-    $("#form-shortlink").submit(function (e) {
-        if ($("#longurl").first().val().match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)) {
+    var can_search = true;
+    var validate_form = [];
+    var config = {
+        time_wait_to_search: 200
+    }
+    $(".toast").toast({"delay": 1000});
+    $('.toast').on('hidden.bs.toast', function () {
+        $(".toast .toast-body").text('');
+    })
 
-        } else {
+    $("#shorturl").keyup(() => {
+        console.log(can_search);
+        if (can_search === true) {
+            can_search = false;
+            setTimeout(() => {
+                let mmm = $("#shorturl").val();
+                $.get('/api/check?l=' + mmm, (data) => {
+                    if (data.error_code === 0) {
+                        $("#shorturl").addClass('text-success');
+                        $("#shorturl").removeClass('text-danger');
+                        validate_form = [];
+                    } else {
+                        $("#shorturl").focus();
+                        validate_form.push({'message': 'Short link douplicate'});
+                        $(".toast .toast-body").text('Short link duplicate in db');
+                        $(".toast").toast('show');
+                        $("#shorturl").removeClass('text-success');
+                        $("#shorturl").addClass('text-danger');
+                    }
+                });
+                can_search = true;
+            }, config.time_wait_to_search);
+        }
+    });
+    $("#form-shortlink").submit(function (e) {
+        if ((!$("#longurl").first().val().match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)) || validate_form !== []) {
+            $(".toast .toast-body").text('Wrong format form');
+            $(".toast").toast('show');
             return false;
         }
     })
