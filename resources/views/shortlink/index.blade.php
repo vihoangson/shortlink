@@ -75,29 +75,29 @@
         {{ $shorturl }}
     @endif
     @auth()
-        <form method='post'>
+        <form method='post' id="form-shortlink">
             {{ csrf_field() }}
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <input type="link"  name='name' class="form-control" id="inputEmail44" placeholder="Name">
+                    <input type="link" name='name' class="form-control" id="inputEmail44" placeholder="Name">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <input type="link"  name='shorturl' class="form-control" id="inputEmail43"
+                    <input type="link" name='shorturl' class="form-control" id="inputEmail43"
                            placeholder="Custom URL">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <input type="link" required name='longurl' class="form-control" id="inputEmail54"
+                    <input type="url" required name='longurl' class="form-control" id="longurl"
                            placeholder="Long URL">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <input type="checkbox" name='is_public' class="" id="is_public"
-                           value='1' > <label for ='is_public'>Public</label>
+                           value='1'> <label for='is_public'>Public</label>
                 </div>
             </div>
             <button type="submit" class="btn btn-info">Make short link</button>
@@ -141,5 +141,14 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
         integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
         crossorigin="anonymous"></script>
+<script>
+    $("#form-shortlink").submit(function (e) {
+        if ($("#longurl").first().val().match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)) {
+
+        } else {
+            return false;
+        }
+    })
+</script>
 </body>
 </html>

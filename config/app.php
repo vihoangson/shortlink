@@ -1,7 +1,4 @@
 <?php
-
-use Barryvdh\Debugbar\Facades\Debugbar;
-
 return [
 
     /*
