@@ -66,7 +66,7 @@
     @endif
     @if(Session::has('show_login_google'))
         <div>
-            <a href="/auth/google"><img src="http://localhost:8000/images/btn_login_google.png"></a>
+            <a href="/auth/google"><img src="/images/btn_login_google.png"></a>
         </div>
     @endif
 
