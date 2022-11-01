@@ -96,7 +96,7 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <input type="checkbox" required name='is_public' class="" id="is_public"
+                    <input type="checkbox" name='is_public' class="" id="is_public"
                            value='1' > <label for ='is_public'>Public</label>
                 </div>
             </div>
