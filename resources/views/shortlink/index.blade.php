@@ -132,8 +132,8 @@
                     <div><textarea class='form-control'>{{ $key->long }}</textarea></div>
                 </td>
                 <td>
-                    <div><input class='form-control' value='https://s.oop.vn/d/{{ $key->short }}'> <a
-                            href="https://s.oop.vn/d/{{ $key->short }}" class="btn btn-primary" target="_blank">Go</a>
+                    <div><input class='form-control' value='{{config('app.url')}}/d/{{ $key->short }}'> <a
+                            href="{{config('app.url')}}/d/{{ $key->short }}" class="btn btn-primary" target="_blank">Go</a>
                     </div>
                 </td>
             </tr>
@@ -209,11 +209,22 @@
             }, config.time_wait_to_search);
         }
     });
+    var is_wrong_format_long = false;
+    var is_wrong_format_short = false;
     $("#form-shortlink").submit(function (e) {
-        if ((!$("#longurl").first().val().match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)) || validate_form !== []) {
+        is_wrong_format_long = (!$("#longurl").first().val().match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/));
+        is_wrong_format_short = (validate_form.length != 0);
+        if (is_wrong_format_long || is_wrong_format_short) {
+
+            $("#longurl").removeClass('text-success');
+            $("#longurl").addClass('text-danger');
+
             $(".toast .toast-body").text('Wrong format form');
             $(".toast").toast('show');
             return false;
+        }else{
+            $("#longurl").addClass('text-success');
+            $("#longurl").removeClass('text-danger');
         }
     })
 </script>

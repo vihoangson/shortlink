@@ -26,7 +26,10 @@ Route::get('/', function () {
     } else {
         Session::flash('alert_error', "Please login !");
         Session::flash('show_login_google', 1);
-        $keys = collect([]);
+        $keys = \App\Models\Shortlink::where('is_public',1)
+                                     ->get()
+                                     ->reverse();
+        //$keys = collect([]);
     }
 
     view()->share('keys', $keys);
