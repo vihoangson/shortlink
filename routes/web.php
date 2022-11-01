@@ -24,8 +24,8 @@ Route::get('/', function () {
                                      ->get()
                                      ->reverse();
     } else {
-        Session::flash('alert_error',"Please login !");
-        Session::flash('show_login_google',1);
+        Session::flash('alert_error', "Please login !");
+        Session::flash('show_login_google', 1);
         $keys = collect([]);
     }
 
@@ -47,12 +47,21 @@ Route::post('/', function (Request $request) {
     if (!Auth::check()) {
         return redirect('/');
     }
-    $longurl     = $request->input('longurl');
-    $shorturl    = substr(md5($request->input('longurl') . time()), 4, 6);
-    $sl          = new \App\Models\Shortlink;
-    $sl->long    = $longurl;
-    $sl->short   = $shorturl;
-    $sl->user_id = Auth::id();
+    $longurl  = $request->input('longurl');
+    $name     = $request->input('name');
+    $shorturl = $request->input('shorturl', false);
+    if (!$shorturl) {
+        $shorturl = substr(md5($request->input('longurl') . time()), 4, 6);
+    }
+
+    $is_public = $request->input('is_public');
+
+    $sl            = new \App\Models\Shortlink;
+    $sl->long      = $longurl;
+    $sl->name      = $name;
+    $sl->short     = $shorturl;
+    $sl->is_public = $is_public;
+    $sl->user_id   = Auth::id();
 
     $sl->save();
     $keys = \App\Models\Shortlink::all()

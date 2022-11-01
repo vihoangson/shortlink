@@ -79,19 +79,25 @@
             {{ csrf_field() }}
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <input type="link" required name='name' class="form-control" id="inputEmail4" placeholder="Name">
+                    <input type="link"  name='name' class="form-control" id="inputEmail44" placeholder="Name">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <input type="link" required name='shorturl' class="form-control" id="inputEmail4"
-                           placeholder="Short URL">
+                    <input type="link"  name='shorturl' class="form-control" id="inputEmail43"
+                           placeholder="Custom URL">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <input type="link" required name='longurl' class="form-control" id="inputEmail4"
+                    <input type="link" required name='longurl' class="form-control" id="inputEmail54"
                            placeholder="Long URL">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <input type="checkbox" required name='is_public' class="" id="is_public"
+                           value='1' > <label for ='is_public'>Public</label>
                 </div>
             </div>
             <button type="submit" class="btn btn-info">Make short link</button>
