@@ -18,34 +18,62 @@ use Illuminate\Support\Facades\Session;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/', function() {      
-    echo Auth::user()->name;    
-    $keys = \App\Models\Shortlink::all()->reverse();
-    view()->share('keys', $keys);   
+Route::get('/', function () {
+    if (Auth::check()) {
+        $keys = \App\Models\Shortlink::where('user_id', Auth::id())
+                                     ->get()
+                                     ->reverse();
+    } else {
+        Session::flash('alert_error',"Please login !");
+        Session::flash('show_login_google',1);
+        $keys = collect([]);
+    }
+
+    view()->share('keys', $keys);
+
     return view('shortlink.index');
 });
-Route::get('/d/{key}', function($key) {   
+Route::get('/d/{key}', function ($key) {
 
-    $k = \App\Models\Shortlink::where('short',$key)->first()->long;
+    $k = \App\Models\Shortlink::where('short', $key)
+                              ->first()->long;
+
     return redirect($k);
+
     return view('shortlink.index');
 });
 
-Route::post('/', function(Request $request) {
-    $longurl = $request->input('longurl');
-    $shorturl = substr(md5($request->input('longurl').time()),4,6);
-    $sl = new \App\Models\Shortlink;
-    $sl->long =$longurl;
-    $sl->short =$shorturl;
+Route::post('/', function (Request $request) {
+    if (!Auth::check()) {
+        return redirect('/');
+    }
+    $longurl     = $request->input('longurl');
+    $shorturl    = substr(md5($request->input('longurl') . time()), 4, 6);
+    $sl          = new \App\Models\Shortlink;
+    $sl->long    = $longurl;
+    $sl->short   = $shorturl;
+    $sl->user_id = Auth::id();
+
     $sl->save();
-    $keys = \App\Models\Shortlink::all()->reverse();
+    $keys = \App\Models\Shortlink::all()
+                                 ->reverse();
     view()->share('keys', $keys);
 
     view()->share('shorturl', $shorturl);
+
     return redirect('/');
 });
 Auth::routes();
+Route::get('/logout', function () {
+    Auth::logout();
 
+    return redirect('/');
+});
 //Route login google
-Route::get('auth/{driver}',[\App\Http\Controllers\Socialite\SocialiteController::class,'redirectToProvider'])->name('login.provider');
-Route::get('auth/{driver}/callback',[\App\Http\Controllers\Socialite\SocialiteController::class,'handleProviderCallback'])->name('login.provider.callback');
+Route::get('auth/{driver}', [\App\Http\Controllers\Socialite\SocialiteController::class, 'redirectToProvider'])
+     ->name('login.provider');
+Route::get('auth/{driver}/callback', [
+    \App\Http\Controllers\Socialite\SocialiteController::class,
+    'handleProviderCallback'
+])
+     ->name('login.provider.callback');
