@@ -234,6 +234,7 @@ return [
         'Trade' => App\Models\Trade::class,
         // 'Debugbar'=>Debugbar::class,
         'Trello'=>TrelloService::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
 
     ],
     'trello_key'=>env('TRELLO_KEY',1),

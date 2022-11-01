@@ -11,6 +11,28 @@
 </head>
 <body>
 
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a href="/" class="nav-link active">Home</a>
+        </li>
+        <li class="nav-item dropdown  d-none">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Action</a>
+            </div>
+        </li>
+        <li class="nav-item d-none">
+            <a href="#" class="nav-link">Active</a>
+        </li>
+        <li class="nav-item">
+            <a href="/auth/google" class="nav-link">Login by google</a>
+        </li>
+    </ul>
+
     <div class="container">
         <h1>Short link</h1>
         <!-- Content here -->

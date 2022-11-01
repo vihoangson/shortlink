@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Session;
 |
 */
 Route::get('/', function() {      
+    echo Auth::user()->name;    
     $keys = \App\Models\Shortlink::all()->reverse();
     view()->share('keys', $keys);   
     return view('shortlink.index');
@@ -39,7 +40,12 @@ Route::post('/', function(Request $request) {
     $sl->save();
     $keys = \App\Models\Shortlink::all()->reverse();
     view()->share('keys', $keys);
+
     view()->share('shorturl', $shorturl);
     return redirect('/');
 });
 Auth::routes();
+
+//Route login google
+Route::get('auth/{driver}',[\App\Http\Controllers\Socialite\SocialiteController::class,'redirectToProvider'])->name('login.provider');
+Route::get('auth/{driver}/callback',[\App\Http\Controllers\Socialite\SocialiteController::class,'handleProviderCallback'])->name('login.provider.callback');
