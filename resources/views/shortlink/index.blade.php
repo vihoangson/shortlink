@@ -142,13 +142,16 @@
                         <img src="/qrcode?text={{config('app.url')}}/{{ $key->short }}">
                     </div>
                 </td>
+
                 <td>
-                    <form action="/link/{{ $key->id }}" method="post">
-                        @csrf
-                        <input name="_method" value="delete" type="hidden">
-                    <button class="btn btn-danger" type="submit" >Delete</button>
-                    </form>
-                    </td>
+                    @auth
+                        <form action="/link/{{ $key->id }}" method="post">
+                            @csrf
+                            <input name="_method" value="delete" type="hidden">
+                            <button class="btn btn-danger" type="submit">Delete</button>
+                        </form>
+                    @endauth
+                </td>
             </tr>
 
         @endforeach
