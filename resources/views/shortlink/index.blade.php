@@ -106,7 +106,7 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <input type="url" required name='longurl' class="form-control" id="longurl"
+                    <input required name='longurl' class="form-control" id="longurl"
                            placeholder="Long URL">
                 </div>
             </div>
