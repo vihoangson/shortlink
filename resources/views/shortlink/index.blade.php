@@ -76,6 +76,9 @@
     @if(Session::has('alert_error'))
         <p class="alert alert-danger">{{ Session::get('alert_error') }}</p>
     @endif
+    @if(Session::has('alert_info'))
+        <p class="alert alert-info">{{ Session::get('alert_info') }}</p>
+    @endif
     @if(Session::has('show_login_google'))
         <div>
             <a href="/auth/google"><img src="/images/btn_login_google.png"></a>
@@ -128,14 +131,23 @@
 
             <tr>
                 <td>{{ $k }}</td>
+                <td>{{ $key->name }}</td>
                 <td>
                     <div><textarea class='form-control'>{{ $key->long }}</textarea></div>
                 </td>
                 <td>
-                    <div><input class='form-control' value='{{config('app.url')}}/d/{{ $key->short }}'> <a
-                            href="{{config('app.url')}}/d/{{ $key->short }}" class="btn btn-primary" target="_blank">Go</a>
+                    <div><input class='form-control' value='{{config('app.url')}}/{{ $key->short }}'> <a
+                            href="{{config('app.url')}}/{{ $key->short }}" class="btn btn-primary"
+                            target="_blank">Go</a>
                     </div>
                 </td>
+                <td>
+                    <form action="/link/{{ $key->id }}" method="post">
+                        @csrf
+                        <input name="_method" value="delete" type="hidden">
+                    <button class="btn btn-danger" type="submit" >Delete</button>
+                    </form>
+                    </td>
             </tr>
 
         @endforeach
@@ -222,7 +234,7 @@
             $(".toast .toast-body").text('Wrong format form');
             $(".toast").toast('show');
             return false;
-        }else{
+        } else {
             $("#longurl").addClass('text-success');
             $("#longurl").removeClass('text-danger');
         }

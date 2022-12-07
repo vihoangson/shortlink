@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\LinkController;
 use App\Models\Message;
+use App\Models\User;
 use App\Services\RouteService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -19,6 +21,9 @@ use Illuminate\Support\Facades\Session;
 |
 */
 Route::get('/', function () {
+    if(config('app.env')=='local'){
+        Auth::login(User::find(1));
+    }
     if (Auth::check()) {
         $keys = \App\Models\Shortlink::where('user_id', Auth::id())
                                      ->get()
@@ -29,22 +34,14 @@ Route::get('/', function () {
         $keys = \App\Models\Shortlink::where('is_public',1)
                                      ->get()
                                      ->reverse();
-        //$keys = collect([]);
     }
 
     view()->share('keys', $keys);
 
     return view('shortlink.index');
 });
-Route::get('/d/{key}', function ($key) {
 
-    $k = \App\Models\Shortlink::where('short', $key)
-                              ->first()->long;
-
-    return redirect($k);
-
-    return view('shortlink.index');
-});
+Route::resource('link',LinkController::class);
 
 Route::post('/', function (Request $request) {
     if (!Auth::check()) {
@@ -89,3 +86,19 @@ Route::get('auth/{driver}/callback', [
     'handleProviderCallback'
 ])
      ->name('login.provider.callback');
+Route::get('/404', function ($key) {
+    return '404';
+});
+Route::get('/{key}', function ($key) {
+    $data =\App\Models\Shortlink::where('short', $key)
+                                ->first();
+    if($data == null){
+        return redirect('/404');
+    }else{
+        $k = $data->long;
+
+        return redirect($k);
+    }
+
+
+});
