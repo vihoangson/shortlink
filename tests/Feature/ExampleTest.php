@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Packages\QRCode;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -14,8 +15,7 @@ class ExampleTest extends TestCase
      */
     public function test_example()
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
+        $generator = new QRCode('3333');
+        dd(imagepng($generator->render_image()));
     }
 }

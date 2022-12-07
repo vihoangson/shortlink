@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Packages\QRCode;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,7 @@ use Illuminate\Support\Facades\Session;
 |
 */
 Route::get('/', function () {
-    if(config('app.env')=='local'){
+    if (config('app.env') == 'local') {
         Auth::login(User::find(1));
     }
     if (Auth::check()) {
@@ -31,7 +32,7 @@ Route::get('/', function () {
     } else {
         Session::flash('alert_error', "Please login !");
         Session::flash('show_login_google', 1);
-        $keys = \App\Models\Shortlink::where('is_public',1)
+        $keys = \App\Models\Shortlink::where('is_public', 1)
                                      ->get()
                                      ->reverse();
     }
@@ -41,7 +42,7 @@ Route::get('/', function () {
     return view('shortlink.index');
 });
 
-Route::resource('link',LinkController::class);
+Route::resource('link', LinkController::class);
 
 Route::post('/', function (Request $request) {
     if (!Auth::check()) {
@@ -89,16 +90,24 @@ Route::get('auth/{driver}/callback', [
 Route::get('/404', function ($key) {
     return '404';
 });
+Route::get('/qrcode', function (Request $request) {
+    $text    = ($request->input('text'));
+    $iqrcode = new QRCode($text);
+    $image   = $iqrcode->render_image();
+
+    header('Content-Type: image/png');
+    imagepng($image);
+    imagedestroy($image);
+    exit;
+});
 Route::get('/{key}', function ($key) {
-    $data =\App\Models\Shortlink::where('short', $key)
-                                ->first();
-    if($data == null){
+    $data = \App\Models\Shortlink::where('short', $key)
+                                 ->first();
+    if ($data == null) {
         return redirect('/404');
-    }else{
+    } else {
         $k = $data->long;
 
         return redirect($k);
     }
-
-
 });

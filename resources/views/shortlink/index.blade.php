@@ -139,6 +139,7 @@
                     <div><input class='form-control' value='{{config('app.url')}}/{{ $key->short }}'> <a
                             href="{{config('app.url')}}/{{ $key->short }}" class="btn btn-primary"
                             target="_blank">Go</a>
+                        <img src="/qrcode?text={{config('app.url')}}/{{ $key->short }}">
                     </div>
                 </td>
                 <td>
