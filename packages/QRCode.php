@@ -49,11 +49,11 @@ class QRCode {
     }
 
     public function output_image() {
-        $image = $this->render_image();
+            $image = $this->render_image();
 
-        header('Content-Type: image/png');
-        imagepng($image);
-        imagedestroy($image);
+            header('Content-Type: image/png');
+            imagepng($image);
+            imagedestroy($image);
     }
 
     public function render_image() {
