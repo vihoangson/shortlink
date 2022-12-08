@@ -15,8 +15,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // issue: Task_vihoangson_1
-
         $schedule->command('backup:db')->cron('10 20 * * *');
     }
 
