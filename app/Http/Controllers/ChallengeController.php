@@ -14,7 +14,7 @@ class ChallengeController extends Controller
      */
     public function index()
     {
-        //
+         //
     }
 
     /**
